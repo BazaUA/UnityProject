@@ -20,6 +20,7 @@ public class LevelController : MonoBehaviour {
 
 	public void onRabitDeath(HeroRabit rabit){
 		rabit.transform.position = this.startingPoint;
+
 	}
 
 	public void addCoins(int n){

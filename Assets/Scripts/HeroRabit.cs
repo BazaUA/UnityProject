@@ -16,7 +16,14 @@ public class HeroRabit : MonoBehaviour {
 	Transform heroParent = null;
 	public int MaxHealth = 2;
 	int health = 1;
+
+
+	public static HeroRabit lastRabit = null;
 	// Use this for initialization
+	void Awake() {
+		lastRabit = this;
+	}
+
 	void Start () {
 		myBody = this.GetComponent<Rigidbody2D> ();
 		mySprite = GetComponent<SpriteRenderer> ();
@@ -128,14 +135,7 @@ public class HeroRabit : MonoBehaviour {
 		}
 	}
 	IEnumerator die (float duration){
-		Vector3 from = transform.position + Vector3.up * 0.3f;
-		Vector3 to = transform.position + Vector3.down * 0.1f;
-		int layer_id = 1 << LayerMask.NameToLayer ("Ground");
-		//Перевіряємо чи проходить лінія через Collider з шаром Ground
-		RaycastHit2D hit = Physics2D.Linecast(from, to, layer_id);
-		if(hit) {
-			animator.SetBool ("die",true);
-		}
+		animator.SetBool ("die",true);
 		yield return new WaitForSeconds(duration);
 		LevelController.current.onRabitDeath(this);
 		animator.SetBool ("die",false);
@@ -147,5 +147,29 @@ public class HeroRabit : MonoBehaviour {
 			this.transform.localScale = Vector3.one * 2;
 	}
 
+
+	public void OnTriggerEnter2D(Collider2D collider){
+		if (this.health > 0) {
+			Orc1 orc = collider.gameObject.GetComponent<Orc1> ();
+			Orc2 orc2 = collider.gameObject.GetComponent<Orc2> ();
+			if (orc != null) {
+				if (!orc.isDead ()) {
+					if (collider == orc.bodyCollider) {
+						this.removeHealth (1);
+						orc.attackRabit ();
+					} else if (collider == orc.headCollider) {
+						orc.removeHealth (1);
+					}
+				}
+			}
+			if (orc2 != null) {
+				if (!orc2.isDead ()) {
+					 if (collider == orc2.headCollider) {
+						orc2.removeHealth (1);
+					}
+				}
+			}
+		}
+	}
 
 }

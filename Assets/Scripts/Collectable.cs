@@ -7,7 +7,6 @@ public class Collectable : MonoBehaviour {
 		
 	}
 	void OnTriggerEnter2D(Collider2D collider) {
-		
 			HeroRabit rabit = collider.GetComponent<HeroRabit>();
 			if(rabit != null) {
 				this.OnRabitHit (rabit);
