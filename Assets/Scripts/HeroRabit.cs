@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class HeroRabit : MonoBehaviour {
 	public float speed=1;
+	public bool isMove;
 	Rigidbody2D myBody;
 	SpriteRenderer mySprite;
 	Animator animator;
@@ -38,68 +39,70 @@ public class HeroRabit : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		if (health > 0) {
-			Vector3 from = transform.position + Vector3.up * 0.3f;
-			Vector3 to = transform.position + Vector3.down * 0.1f;
-			int layer_id = 1 << LayerMask.NameToLayer ("Ground");
-			//Перевіряємо чи проходить лінія через Collider з шаром Ground
-			RaycastHit2D hit = Physics2D.Linecast (from, to, layer_id);
-			if (hit) {
-				isGrounded = true;
-			} else {
-				isGrounded = false;
-			}
-			//Намалювати лінію (для розробника)
-			Debug.DrawLine (from, to, Color.red);
+		if (isMove) {
+			if (health > 0) {
+				Vector3 from = transform.position + Vector3.up * 0.3f;
+				Vector3 to = transform.position + Vector3.down * 0.1f;
+				int layer_id = 1 << LayerMask.NameToLayer ("Ground");
+				//Перевіряємо чи проходить лінія через Collider з шаром Ground
+				RaycastHit2D hit = Physics2D.Linecast (from, to, layer_id);
+				if (hit) {
+					isGrounded = true;
+				} else {
+					isGrounded = false;
+				}
+				//Намалювати лінію (для розробника)
+				Debug.DrawLine (from, to, Color.red);
 
-			if (Input.GetButtonDown ("Jump") && isGrounded) {
-				this.JumpActive = true;
-			}
-			if (this.JumpActive) {
-				//Якщо кнопку ще тримають
-				if (Input.GetButton ("Jump")) {
-					this.JumpTime += Time.deltaTime;
-					if (this.JumpTime < this.MaxJumpTime) {
-						Vector2 vel = myBody.velocity;
-						vel.y = JumpSpeed * (1.0f - JumpTime / MaxJumpTime);
-						myBody.velocity = vel;
+				if (Input.GetButtonDown ("Jump") && isGrounded) {
+					this.JumpActive = true;
+				}
+				if (this.JumpActive) {
+					//Якщо кнопку ще тримають
+					if (Input.GetButton ("Jump")) {
+						this.JumpTime += Time.deltaTime;
+						if (this.JumpTime < this.MaxJumpTime) {
+							Vector2 vel = myBody.velocity;
+							vel.y = JumpSpeed * (1.0f - JumpTime / MaxJumpTime);
+							myBody.velocity = vel;
+						}
+					} else {
+						this.JumpActive = false;
+						this.JumpTime = 0;
+					}
+				}
+
+				float value = Input.GetAxis ("Horizontal");
+
+				if (Mathf.Abs (value) > 0) {
+					Vector2 vel = myBody.velocity;
+					vel.x = value * speed;
+					myBody.velocity = vel;
+				}
+				if (value < 0)
+					mySprite.flipX = true;
+				else if (value > 0)
+					mySprite.flipX = false;
+		
+				if (Mathf.Abs (value) > 0) {
+					animator.SetBool ("run", true);
+				} else {
+					animator.SetBool ("run", false);
+				}
+
+				if (this.isGrounded) {
+					animator.SetBool ("jump", false);
+				} else {
+					animator.SetBool ("jump", true);
+				}
+
+				if (hit) {
+					if (hit.transform != null && hit.transform.GetComponent<MovingPlatform> () != null) {
+						SetNewParent (this.transform, hit.transform);
 					}
 				} else {
-					this.JumpActive = false;
-					this.JumpTime = 0;
+					SetNewParent (this.transform, this.heroParent);
 				}
-			}
-
-			float value = Input.GetAxis ("Horizontal");
-
-			if (Mathf.Abs (value) > 0) {
-				Vector2 vel = myBody.velocity;
-				vel.x = value * speed;
-				myBody.velocity = vel;
-			}
-			if (value < 0)
-				mySprite.flipX = true;
-			else if (value > 0)
-				mySprite.flipX = false;
-		
-			if (Mathf.Abs (value) > 0) {
-				animator.SetBool ("run", true);
-			} else {
-				animator.SetBool ("run", false);
-			}
-
-			if (this.isGrounded) {
-				animator.SetBool ("jump", false);
-			} else {
-				animator.SetBool ("jump", true);
-			}
-
-			if (hit) {
-				if (hit.transform != null && hit.transform.GetComponent<MovingPlatform> () != null) {
-					SetNewParent (this.transform, hit.transform);
-				}
-			} else {
-				SetNewParent (this.transform, this.heroParent);
 			}
 		}
 	}
