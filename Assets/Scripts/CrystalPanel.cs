@@ -14,7 +14,9 @@ public class CrystalPanel : MonoBehaviour {
 	Dictionary<CrystalColor,bool> obtainedCrystal= new Dictionary<CrystalColor, bool>();
 
 
-
+	public Dictionary<CrystalColor,bool> getObtainedCrystal(){
+		return obtainedCrystal;
+	}
 
 	// Use this for initialization
 	void Start () {

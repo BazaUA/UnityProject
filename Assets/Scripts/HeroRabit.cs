@@ -4,8 +4,15 @@ using UnityEngine;
 
 
 public class HeroRabit : MonoBehaviour {
+	bool sound=true;
+	public AudioClip groundSound = null;
+	public AudioClip runSound = null;
+	public AudioClip deadSound = null;
+	AudioSource groundSource = null;
+	AudioSource runSource = null;
+	AudioSource deadSource = null;
 	public float speed=1;
-	public bool isMove;
+	public  bool isMove;
 	Rigidbody2D myBody;
 	SpriteRenderer mySprite;
 	Animator animator;
@@ -26,6 +33,12 @@ public class HeroRabit : MonoBehaviour {
 	}
 
 	void Start () {
+		groundSource = gameObject.AddComponent<AudioSource> ();
+		groundSource.clip = groundSound;
+		runSource = gameObject.AddComponent<AudioSource> ();
+		runSource.clip = runSound;
+		deadSource = gameObject.AddComponent<AudioSource> ();
+		deadSource.clip = deadSound;
 		myBody = this.GetComponent<Rigidbody2D> ();
 		mySprite = GetComponent<SpriteRenderer> ();
 		animator = GetComponent<Animator> ();
@@ -85,12 +98,16 @@ public class HeroRabit : MonoBehaviour {
 					mySprite.flipX = false;
 		
 				if (Mathf.Abs (value) > 0) {
+					if (sound)
+						runSource.Play ();
 					animator.SetBool ("run", true);
 				} else {
 					animator.SetBool ("run", false);
 				}
 
 				if (this.isGrounded) {
+					if(sound)
+						groundSource.Play ();
 					animator.SetBool ("jump", false);
 				} else {
 					animator.SetBool ("jump", true);
@@ -138,6 +155,8 @@ public class HeroRabit : MonoBehaviour {
 		}
 	}
 	IEnumerator die (float duration){
+		if(sound)
+		deadSource.Play ();
 		animator.SetBool ("die",true);
 		yield return new WaitForSeconds(duration);
 		LevelController.current.onRabitDeath(this);
@@ -175,4 +194,15 @@ public class HeroRabit : MonoBehaviour {
 		}
 	}
 
+	public void dieByDethZone(){
+		if(sound)
+		deadSource.Play ();
+	}
+
+	public void setSoundOff(){
+		sound = false;
+	}
+	public void setSoundOn(){
+		sound = true;
+	}
 }

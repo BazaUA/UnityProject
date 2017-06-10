@@ -4,6 +4,9 @@ using UnityEngine;
 
 
 public class Orc2 : MonoBehaviour {
+	bool sound=true;
+	public AudioClip attackSound = null;
+	AudioSource attackSource = null;
 	public float speed=2;
 	Rigidbody2D myBody;
 	SpriteRenderer mySprite;
@@ -28,6 +31,8 @@ public class Orc2 : MonoBehaviour {
 	Mode mode=Mode.GoToB;
 	// Use this for initialization
 	void Start () {
+		attackSource = gameObject.AddComponent<AudioSource> ();
+		attackSource.clip = attackSound;
 		pointA = this.transform.position;
 		pointB = pointA;
 		if (patrolDistance < 0) {
@@ -146,7 +151,10 @@ public class Orc2 : MonoBehaviour {
 		if (Mathf.Abs (rabit_pos.x - my_pos.x) < radius) {
 			if (Time.time - this.lastCarrot > time) {
 				this.lastCarrot = Time.time;
+				if(sound)
+				attackSource.Play();
 				animator.SetTrigger ("attackRabit");
+
 				yield return new WaitForSeconds (0.2f);
 				GameObject obj = GameObject.Instantiate (this.carrot);
 				obj.transform.position = my_pos + Vector3.up * 0.5f;
@@ -162,5 +170,12 @@ public class Orc2 : MonoBehaviour {
 
 			}
 		}
+	}
+
+	public void setSoundOff(){
+		sound = false;
+	}
+	public void setSoundOn(){
+		sound = true;
 	}
 }

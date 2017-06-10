@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class Door1 : MonoBehaviour {
-
+public class Door2 : MonoBehaviour {
+	public SpriteRenderer locked;
 	public SpriteRenderer check;
 	public Sprite fruitSprite;
 	public Sprite crystalSprite;
@@ -11,17 +11,20 @@ public class Door1 : MonoBehaviour {
 	public SpriteRenderer crystalRender;
 
 	void Start(){
-		if (!LevelController.isLevel1Complated)
+		if (LevelController.isLevel1Complated)
+			locked.enabled = false;
+		if (!LevelController.isLevel2Complated)
 			check.enabled = false;
-		if (LevelController.isLevel1CrysralsCollected)
+		if (LevelController.isLevel2CrysralsCollected)
 			crystalRender.sprite = crystalSprite;
-		if (LevelController.isLevel1FruitCollected) {
+		if (LevelController.isLevel2FruitCollected) {
 			fruitRender.sprite = fruitSprite;	
 		}
-	}
 
+	}
 	void OnTriggerEnter2D(Collider2D collider) {
-		SceneManager.LoadScene ("Level1");
+		if(LevelController.isLevel1Complated)
+		SceneManager.LoadScene ("Level2");
 	}
 
 }
