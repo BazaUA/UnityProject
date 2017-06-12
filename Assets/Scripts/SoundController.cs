@@ -5,8 +5,9 @@ using UnityEngine;
 public class SoundController : MonoBehaviour {
 	public static SoundController current;
 	public HeroRabit rabit;
-	public Orc1 orc1;
-	public Orc2 orc2;
+	public List<Orc1> orcs1;
+	public List<Orc2> orcs2;
+
 	public bool music=true;
 	public bool sound=true;
 
@@ -55,10 +56,14 @@ public class SoundController : MonoBehaviour {
 			PlayerPrefs.SetInt ("sound",0);
 			PlayerPrefs.Save ();
 			HeroRabit.lastRabit.setSoundOff ();
-			if(orc1!=null)
-			orc1.setSoundOff ();
-			if(orc2!=null)
-			orc2.setSoundOff ();
+			for (int i = 0; i < orcs1.Count; i++) {
+				if (orcs1[i] != null)
+					orcs1[i].setSoundOff ();
+			}
+			for (int i = 0; i < orcs2.Count; i++) {
+				if (orcs2[i] != null)
+					orcs2[i].setSoundOff ();
+			}
 			WinPanel.isSound = false;
 			LosePanel.isSound = false;
 		} else {
@@ -68,10 +73,14 @@ public class SoundController : MonoBehaviour {
 			PlayerPrefs.SetInt ("sound",1);
 			PlayerPrefs.Save ();
 			HeroRabit.lastRabit.setSoundOn ();
-			if(orc1!=null)
-			orc1.setSoundOn ();
-			if(orc2!=null)
-			orc2.setSoundOn ();
+			for (int i = 0; i < orcs1.Count; i++) {
+				if (orcs1[i] != null)
+					orcs1[i].setSoundOn ();
+			}
+			for (int i = 0; i < orcs2.Count; i++) {
+				if (orcs2[i] != null)
+					orcs2[i].setSoundOn ();
+			}
 		}
 	}
 

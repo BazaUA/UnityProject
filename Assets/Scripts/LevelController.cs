@@ -145,6 +145,13 @@ public class LevelController : MonoBehaviour {
 		labelFruits.text = fruits.ToString();
 	}
 
+	public void addLife(int n){
+		if (rabitLives < 3) {
+			rabitLives += n;
+			this.livesPanel.setLivesQuantity (this.rabitLives);
+		}
+	}
+
 	public void addCrystal(CrystalColor color){
 		crystalPanel.addCrystal (color);
 	}

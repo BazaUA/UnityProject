@@ -67,7 +67,7 @@ public class HeroRabit : MonoBehaviour {
 				//Намалювати лінію (для розробника)
 				Debug.DrawLine (from, to, Color.red);
 
-				if (Input.GetButtonDown ("Jump") && isGrounded) {
+				if (Input.GetButton ("Jump") && isGrounded) {
 					this.JumpActive = true;
 				}
 				if (this.JumpActive) {
@@ -84,6 +84,7 @@ public class HeroRabit : MonoBehaviour {
 						this.JumpTime = 0;
 					}
 				}
+					
 
 				float value = Input.GetAxis ("Horizontal");
 
@@ -92,10 +93,13 @@ public class HeroRabit : MonoBehaviour {
 					vel.x = value * speed;
 					myBody.velocity = vel;
 				}
-				if (value < 0)
+				if (value < 0) {
 					mySprite.flipX = true;
-				else if (value > 0)
+
+				} else if (value > 0) {
+					
 					mySprite.flipX = false;
+				}
 		
 				if (Mathf.Abs (value) > 0) {
 					if (sound)
